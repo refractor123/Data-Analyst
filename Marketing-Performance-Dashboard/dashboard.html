@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketing Performance Command Center</title>
+<style>
+  :root{
+    --surface:#1a1a19; --page:#0d0d0d; --card:#161615;
+    --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+    --blue:#3987e5; --orange:#d95926; --aqua:#199e70; --yellow:#c98500;
+    --magenta:#d55181; --violet:#9085e9; --red:#e66767;
+    --good:#0ca30c; --warning:#fab219; --critical:#d03b3b;
+    --accent:#4f7cff; /* marketing indigo, chrome only */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--page); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif; line-height:1.45; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px; margin:0 auto; padding:28px 20px 64px;}
+  .mono{font-variant-numeric:tabular-nums;}
+  header{border-top:3px solid var(--accent); padding-top:18px;}
+  .eyebrow{display:flex; gap:10px; align-items:center; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); font-weight:600;}
+  .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+  h1{font-size:30px; line-height:1.12; margin:12px 0 6px; letter-spacing:-.02em;}
+  h1 .hl{color:var(--accent);}
+  .sub{color:var(--ink2); font-size:15px; max-width:770px;}
+  .meta{margin-top:14px; display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{font-size:11.5px; color:var(--ink2); border:1px solid var(--border); border-radius:999px; padding:4px 11px; background:var(--card);}
+
+  .kpis{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:24px 0 8px;}
+  .kpi{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 15px;}
+  .kpi .label{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:600;}
+  .kpi .val{font-size:25px; font-weight:650; margin-top:8px; letter-spacing:-.01em;}
+  .kpi .unit{font-size:13px; color:var(--ink2); font-weight:500; margin-left:2px;}
+  .kpi .foot{font-size:11.5px; color:var(--muted); margin-top:3px;}
+
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:16px;}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 18px 12px;}
+  .card.wide{grid-column:1 / -1;}
+  .card h2{font-size:15.5px; margin:0 0 2px; letter-spacing:-.01em;}
+  .card .desc{font-size:12.5px; color:var(--muted); margin:0 0 14px;}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin:2px 0 12px; font-size:12px; color:var(--ink2);}
+  .legend .it{display:flex; align-items:center; gap:6px;}
+  .legend .sw{width:11px;height:11px;border-radius:3px;}
+  .insight{grid-column:1/-1; background:linear-gradient(90deg,rgba(79,124,255,.12),rgba(22,22,21,0) 60%);
+    border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:10px; padding:14px 16px; font-size:13.5px; color:var(--ink2);}
+  .insight b{color:var(--ink);}
+  svg{display:block; width:100%; overflow:visible;}
+  .axis-lbl{fill:var(--muted); font-size:11px;} .val-lbl{fill:var(--ink); font-size:11.5px; font-weight:600;}
+  .cat-lbl{fill:var(--ink2); font-size:12px;} .grline{stroke:var(--grid); stroke-width:1;} .baseline{stroke:var(--axis); stroke-width:1;}
+  .tt{position:fixed; pointer-events:none; background:#0b0b0b; color:#fff; border:1px solid var(--border);
+    border-radius:8px; padding:8px 10px; font-size:12px; opacity:0; transition:opacity .08s; box-shadow:0 6px 24px rgba(0,0,0,.5); z-index:50; max-width:260px;}
+  .tt .r{display:flex; justify-content:space-between; gap:16px;} .tt .k{color:var(--ink2);}
+  .hoverable{cursor:crosshair;}
+  footer{margin-top:40px; color:var(--muted); font-size:12px; border-top:1px solid var(--border); padding-top:16px;}
+  @media (max-width:900px){ .kpis{grid-template-columns:repeat(3,1fr);} .grid{grid-template-columns:1fr;} h1{font-size:24px;} }
+  @media (max-width:560px){ .kpis{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span class="dot"></span> Growth Marketing · Multi-Channel Acquisition &amp; Retention · 18-Month View</div>
+    <h1>Multi-Channel Marketing <span class="hl">Performance</span> Command Center</h1>
+    <p class="sub">An end-to-end view of paid, owned and earned marketing: how <b>$4.0M</b> of ad spend across 8 channels
+      converts through the full funnel into customers and revenue — with channel-level <b>ROAS &amp; CAC</b>, an
+      impression-to-purchase funnel, and monthly <b>cohort retention</b> for LTV.</p>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="grid">
+    <div class="insight" id="insight"></div>
+
+    <div class="card wide">
+      <h2>Revenue &amp; new customers by month</h2>
+      <p class="desc">18 months of monthly revenue (12-month customer value). Q4 peaks track the holiday season; the trend rises with spend and conversion optimization.</p>
+      <div id="revTrend"></div>
+    </div>
+
+    <div class="card">
+      <h2>Return on ad spend by channel</h2>
+      <p class="desc">ROAS on paid channels. Dashed line = 1.0× breakeven; bars left of it lose money.</p>
+      <div class="legend">
+        <span class="it"><span class="sw" style="background:var(--blue)"></span>Profitable (≥1.0×)</span>
+        <span class="it"><span class="sw" style="background:var(--red)"></span>Below breakeven</span>
+      </div>
+      <div id="roas"></div>
+    </div>
+
+    <div class="card">
+      <h2>Customer acquisition cost by channel</h2>
+      <p class="desc">Blended CAC = spend ÷ new customers. Paid channels only.</p>
+      <div id="cac"></div>
+    </div>
+
+    <div class="card">
+      <h2>Acquisition funnel</h2>
+      <p class="desc">Impression → purchase, full window. Width is log-scaled; labels show volume and step conversion.</p>
+      <div id="funnel"></div>
+    </div>
+
+    <div class="card">
+      <h2>Revenue by channel type</h2>
+      <p class="desc">Where value comes from: owned &amp; earned vs paid. Spend shown for context.</p>
+      <div id="mix"></div>
+    </div>
+
+    <div class="card wide">
+      <h2>Cohort retention — monthly acquisition cohorts</h2>
+      <p class="desc">% of each month's new customers still active N months later. Darker = higher retention. The M1 drop and the flattening long-tail define LTV.</p>
+      <div id="cohort"></div>
+    </div>
+  </div>
+
+  <footer>
+    <b>Synthetic dataset</b> — modelled to realistic SaaS/e-commerce funnel economics for portfolio demonstration.
+    Grain: day × channel × campaign × device (31k+ rows) + monthly cohort-retention table ·
+    Metrics: CTR, CPC, CVR, CAC, ROAS, retention, LTV · Python · designed for Tableau &amp; Power BI.
+  </footer>
+</div>
+
+<div class="tt" id="tt"></div>
+<script>
+const DATA={"kpis": {"spend": 3950882.0, "revenue": 21931874.0, "roas": 5.55, "new_customers": 96172, "cac": 168.6, "signup_cvr": 7.3, "months": 18}, "monthly": [{"month": "2025-01", "spend": 188076.0, "revenue": 861801.0, "new_customers": 3799, "roas": 5.0}, {"month": "2025-02", "spend": 162360.0, "revenue": 756741.0, "new_customers": 3268, "roas": 5.0}, {"month": "2025-03", "spend": 189299.0, "revenue": 906947.0, "new_customers": 3932, "roas": 5.0}, {"month": "2025-04", "spend": 187056.0, "revenue": 908396.0, "new_customers": 3941, "roas": 5.0}, {"month": "2025-05", "spend": 199856.0, "revenue": 988653.0, "new_customers": 4343, "roas": 5.0}, {"month": "2025-06", "spend": 184506.0, "revenue": 957591.0, "new_customers": 4228, "roas": 5.0}, {"month": "2025-07", "spend": 190205.0, "revenue": 977731.0, "new_customers": 4296, "roas": 5.0}, {"month": "2025-08", "spend": 197832.0, "revenue": 1043931.0, "new_customers": 4572, "roas": 5.0}, {"month": "2025-09", "spend": 214214.0, "revenue": 1151048.0, "new_customers": 5090, "roas": 5.0}, {"month": "2025-10", "spend": 246902.0, "revenue": 1342551.0, "new_customers": 5878, "roas": 5.0}, {"month": "2025-11", "spend": 268521.0, "revenue": 1548821.0, "new_customers": 6862, "roas": 6.0}, {"month": "2025-12", "spend": 302581.0, "revenue": 1745494.0, "new_customers": 7670, "roas": 6.0}, {"month": "2026-01", "spend": 250792.0, "revenue": 1455031.0, "new_customers": 6369, "roas": 6.0}, {"month": "2026-02", "spend": 212513.0, "revenue": 1237535.0, "new_customers": 5421, "roas": 6.0}, {"month": "2026-03", "spend": 238388.0, "revenue": 1489093.0, "new_customers": 6525, "roas": 6.0}, {"month": "2026-04", "spend": 233926.0, "revenue": 1478133.0, "new_customers": 6465, "roas": 6.0}, {"month": "2026-05", "spend": 248971.0, "revenue": 1567974.0, "new_customers": 6891, "roas": 6.0}, {"month": "2026-06", "spend": 234884.0, "revenue": 1514403.0, "new_customers": 6622, "roas": 6.0}], "channels": [{"channel": "Email", "channel_type": "Owned", "spend": 0.0, "revenue": 7897257.0, "new_customers": 44697, "sessions": 1195741, "signups": 117111, "roas": null, "cac": 0.0, "rev_per_customer": 176.68, "signup_cvr": 9.79}, {"channel": "Google Search", "channel_type": "Paid Search", "spend": 1429528.0, "revenue": 4267937.0, "new_customers": 10830, "sessions": 550920, "signups": 45132, "roas": 2.99, "cac": 132.0, "rev_per_customer": 394.08, "signup_cvr": 8.19}, {"channel": "Referral", "channel_type": "Referral", "spend": 0.0, "revenue": 3295729.0, "new_customers": 17664, "sessions": 338892, "signups": 40652, "roas": null, "cac": 0.0, "rev_per_customer": 186.58, "signup_cvr": 12.0}, {"channel": "Meta Ads", "channel_type": "Paid Social", "spend": 1105246.0, "revenue": 2012862.0, "new_customers": 6461, "sessions": 938059, "signups": 40982, "roas": 1.82, "cac": 171.06, "rev_per_customer": 311.54, "signup_cvr": 4.37}, {"channel": "Organic Search", "channel_type": "Organic", "spend": 0.0, "revenue": 1678911.0, "new_customers": 10378, "sessions": 500286, "signups": 38134, "roas": null, "cac": 0.0, "rev_per_customer": 161.78, "signup_cvr": 7.62}, {"channel": "LinkedIn Ads", "channel_type": "Paid Social", "spend": 575160.0, "revenue": 1601942.0, "new_customers": 1737, "sessions": 87710, "signups": 4968, "roas": 2.79, "cac": 331.12, "rev_per_customer": 922.25, "signup_cvr": 5.66}, {"channel": "Google PMax", "channel_type": "Paid Search", "spend": 474140.0, "revenue": 917910.0, "new_customers": 2900, "sessions": 300865, "signups": 15888, "roas": 1.94, "cac": 163.5, "rev_per_customer": 316.52, "signup_cvr": 5.28}, {"channel": "TikTok Ads", "channel_type": "Paid Social", "spend": 366807.0, "revenue": 259326.0, "new_customers": 1505, "sessions": 427739, "signups": 14131, "roas": 0.71, "cac": 243.73, "rev_per_customer": 172.31, "signup_cvr": 3.3}], "funnel": [{"stage": "Impressions", "value": 148339895, "pct_of_top": 100.0, "step_cvr": 100.0}, {"stage": "Clicks", "value": 5012999, "pct_of_top": 3.38, "step_cvr": 3.4}, {"stage": "Sessions", "value": 4340212, "pct_of_top": 2.93, "step_cvr": 86.6}, {"stage": "Signups", "value": 316998, "pct_of_top": 0.21, "step_cvr": 7.3}, {"stage": "Trials", "value": 183979, "pct_of_top": 0.12, "step_cvr": 58.0}, {"stage": "Purchases", "value": 96172, "pct_of_top": 0.06, "step_cvr": 52.3}], "cohort": {"cohorts": ["2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06"], "months": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], "matrix": [[100.0, 68.0, 57.0, 51.0, 47.0, 44.0, 42.0, 40.0, 38.5, 37.5, 36.8, 36.2, 35.8, 35.5, 35.2, 35.0, 34.9, 34.8], [100.0, 68.4, 57.3, 51.3, 47.3, 44.3, 42.3, 40.2, 38.7, 37.7, 37.0, 36.4, 36.0, 35.7, 35.4, 35.2, 35.1, null], [100.0, 68.8, 57.7, 51.6, 47.6, 44.5, 42.5, 40.5, 39.0, 38.0, 37.2, 36.6, 36.2, 35.9, 35.6, 35.4, null, null], [100.0, 69.2, 58.0, 51.9, 47.8, 44.8, 42.8, 40.7, 39.2, 38.2, 37.5, 36.9, 36.4, 36.1, 35.8, null, null, null], [100.0, 69.6, 58.4, 52.2, 48.1, 45.1, 43.0, 41.0, 39.4, 38.4, 37.7, 37.1, 36.7, 36.4, null, null, null, null], [100.0, 70.0, 58.7, 52.5, 48.4, 45.3, 43.3, 41.2, 39.7, 38.6, 37.9, 37.3, 36.9, null, null, null, null, null], [100.0, 70.4, 59.1, 52.8, 48.7, 45.6, 43.5, 41.4, 39.9, 38.8, 38.1, 37.5, null, null, null, null, null, null], [100.0, 70.9, 59.4, 53.1, 49.0, 45.8, 43.8, 41.7, 40.1, 39.1, 38.3, null, null, null, null, null, null, null], [100.0, 71.3, 59.7, 53.4, 49.3, 46.1, 44.0, 41.9, 40.3, 39.3, null, null, null, null, null, null, null, null], [100.0, 71.7, 60.1, 53.8, 49.5, 46.4, 44.3, 42.2, 40.6, null, null, null, null, null, null, null, null, null], [100.0, 72.1, 60.4, 54.1, 49.8, 46.6, 44.5, 42.4, null, null, null, null, null, null, null, null, null, null], [100.0, 72.5, 60.8, 54.4, 50.1, 46.9, 44.8, null, null, null, null, null, null, null, null, null, null, null], [100.0, 72.9, 61.1, 54.7, 50.4, 47.2, null, null, null, null, null, null, null, null, null, null, null, null], [100.0, 73.3, 61.4, 55.0, 50.7, null, null, null, null, null, null, null, null, null, null, null, null, null], [100.0, 73.7, 61.8, 55.3, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [100.0, 74.1, 62.1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [100.0, 74.5, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], [100.0, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]]}, "channel_type_mix": [{"channel_type": "Owned", "spend": 0.0, "revenue": 7897257.0, "new_customers": 44697}, {"channel_type": "Paid Search", "spend": 1903668.0, "revenue": 5185847.0, "new_customers": 13730}, {"channel_type": "Paid Social", "spend": 2047213.0, "revenue": 3874129.0, "new_customers": 9703}, {"channel_type": "Referral", "spend": 0.0, "revenue": 3295729.0, "new_customers": 17664}, {"channel_type": "Organic", "spend": 0.0, "revenue": 1678911.0, "new_customers": 10378}]};
+const NS="http://www.w3.org/2000/svg";
+const C={blue:"#3987e5",orange:"#d95926",aqua:"#199e70",yellow:"#c98500",magenta:"#d55181",violet:"#9085e9",red:"#e66767",good:"#0ca30c",warning:"#fab219",critical:"#d03b3b",muted:"#898781",ink:"#fff",ink2:"#c3c2b7",grid:"#2c2c2a",axis:"#383835"};
+const el=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const tt=document.getElementById("tt");
+function showTT(h,x,y){tt.innerHTML=h;tt.style.opacity=1;const b=tt.getBoundingClientRect();let nx=x+14,ny=y+14;if(nx+b.width>innerWidth)nx=x-b.width-14;if(ny+b.height>innerHeight)ny=y-b.height-14;tt.style.left=nx+"px";tt.style.top=ny+"px";}
+function hideTT(){tt.style.opacity=0;}
+const money=n=>"$"+Math.round(n).toLocaleString();
+const moneyShort=n=>n>=1e6?"$"+(n/1e6).toFixed(1)+"M":n>=1e3?"$"+(n/1e3).toFixed(0)+"k":"$"+Math.round(n);
+const numShort=n=>n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e3?(n/1e3).toFixed(0)+"k":""+Math.round(n);
+
+const k=DATA.kpis;
+document.getElementById("meta").innerHTML=[
+  k.months+" months","8 channels","31k+ daily rows","Full-funnel attribution","18 monthly cohorts"
+].map(t=>`<span class="chip">${t}</span>`).join("");
+
+const kpis=[
+  {label:"Revenue (12-mo value)",val:moneyShort(k.revenue),foot:"attributed, all channels"},
+  {label:"Ad spend",val:moneyShort(k.spend),foot:"paid channels"},
+  {label:"Blended ROAS",val:k.roas+"×",foot:"revenue ÷ spend"},
+  {label:"New customers",val:numShort(k.new_customers),foot:"full window"},
+  {label:"Blended CAC",val:"$"+k.cac.toFixed(0),foot:"paid acquisition"},
+  {label:"Signup conv. rate",val:k.signup_cvr+"%",foot:"sessions → signups"},
+];
+document.getElementById("kpis").innerHTML=kpis.map(x=>`<div class="kpi"><div class="label">${x.label}</div>
+  <div class="val mono">${x.val}</div><div class="foot">${x.foot}</div></div>`).join("");
+
+// insight
+(function(){
+  const ch=DATA.channels.filter(c=>c.roas!=null).sort((a,b)=>b.roas-a.roas);
+  const best=ch[0], worst=ch[ch.length-1];
+  document.getElementById("insight").innerHTML=`<b>Insight —</b> <b>${best.channel}</b> is the most efficient paid channel at
+    <b>${best.roas}× ROAS</b>, while <b>${worst.channel}</b> sits below breakeven at <b>${worst.roas}×</b> — reallocating its
+    budget toward search &amp; ${best.channel.includes("LinkedIn")?"high-intent":"top"} channels is the clearest growth lever.
+    Owned &amp; earned channels (email, organic, referral) generate the majority of revenue at near-zero CAC, anchoring a
+    healthy <b>${k.roas}× blended ROAS</b>.`;
+})();
+
+/* ---- shared horizontal bars ---- */
+function hbars(mount, rows, opt){
+  const W=opt.w||520, rh=opt.rh||26, gap=opt.gap||10, padL=opt.padL||140, padR=opt.padR||60, padT=8;
+  const H=padT+rows.length*(rh+gap);
+  const min=opt.min||0, max=opt.max||Math.max(...rows.map(r=>r.value))*1.06;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`});
+  const x=v=>padL+((v-min)/(max-min))*(W-padL-padR);
+  const ticks=opt.ticks||4;
+  for(let i=0;i<=ticks;i++){const gv=min+(max-min)*i/ticks,gx=x(gv);
+    svg.appendChild(el("line",{x1:gx,y1:padT,x2:gx,y2:H-4,class:"grline"}));
+    const t=el("text",{x:gx,y:H+2,"text-anchor":"middle",class:"axis-lbl"});t.textContent=opt.fmtTick?opt.fmtTick(gv):Math.round(gv);svg.appendChild(t);}
+  rows.forEach((r,i)=>{const y=padT+i*(rh+gap);
+    const lb=el("text",{x:padL-10,y:y+rh/2+4,"text-anchor":"end",class:"cat-lbl"});lb.textContent=r.label;svg.appendChild(lb);
+    if(r.sub){const s=el("text",{x:padL-10,y:y+rh/2+16,"text-anchor":"end",class:"axis-lbl"});s.textContent=r.sub;svg.appendChild(s);}
+    const bw=Math.max(2,x(r.value)-padL);
+    const rect=el("rect",{x:padL,y:y+3,width:bw,height:rh-6,rx:4,fill:r.color||C.blue,class:"hoverable"});
+    rect.addEventListener("mousemove",e=>showTT(r.tip,e.clientX,e.clientY));rect.addEventListener("mouseleave",hideTT);svg.appendChild(rect);
+    const vl=el("text",{x:padL+bw+8,y:y+rh/2+4,class:"val-lbl"});vl.textContent=opt.fmtVal?opt.fmtVal(r.value):r.value;svg.appendChild(vl);
+  });
+  if(opt.refLine!=null){const rx=x(opt.refLine);
+    svg.appendChild(el("line",{x1:rx,y1:padT-2,x2:rx,y2:H-2,stroke:C.ink2,"stroke-width":1.2,"stroke-dasharray":"4 3"}));
+    const t=el("text",{x:rx,y:padT-6,"text-anchor":"middle",class:"axis-lbl",fill:C.ink2});t.textContent=opt.refLabel||"";svg.appendChild(t);}
+  mount.innerHTML="";mount.appendChild(svg);
+}
+
+/* ---- area/line trend with month labels ---- */
+function areaTrend(mount, pts, opt){
+  const W=980,H=250,padL=54,padR=16,padT=16,padB=34;
+  const ys=pts.map(p=>p.y); let maxY=Math.max(...ys)*1.12; maxY=Math.ceil(maxY/2e5)*2e5;
+  const x=i=>padL+i/(pts.length-1)*(W-padL-padR);
+  const y=v=>padT+(1-v/maxY)*(H-padT-padB);
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`});
+  for(let i=0;i<=4;i++){const gv=maxY*i/4,gy=y(gv);
+    svg.appendChild(el("line",{x1:padL,y1:gy,x2:W-padR,y2:gy,class:"grline"}));
+    const t=el("text",{x:padL-8,y:gy+4,"text-anchor":"end",class:"axis-lbl"});t.textContent=moneyShort(gv);svg.appendChild(t);}
+  pts.forEach((p,i)=>{ if(i%3===0||i===pts.length-1){const t=el("text",{x:x(i),y:H-10,"text-anchor":"middle",class:"axis-lbl"});t.textContent=p.label;svg.appendChild(t);} });
+  let dl="",da="";pts.forEach((p,i)=>{const px=x(i).toFixed(1),py=y(p.y).toFixed(1);dl+=(i?"L":"M")+px+" "+py+" ";da+=(i?"L":"M")+px+" "+py+" ";});
+  da="M"+x(0).toFixed(1)+" "+y(0)+" "+da.replace(/^M/,"L")+"L"+x(pts.length-1).toFixed(1)+" "+y(0)+" Z";
+  const grad=el("linearGradient",{id:"revg",x1:0,y1:0,x2:0,y2:1});
+  grad.appendChild(el("stop",{offset:"0%","stop-color":C.blue,"stop-opacity":.35}));
+  grad.appendChild(el("stop",{offset:"100%","stop-color":C.blue,"stop-opacity":0}));
+  const defs=el("defs");defs.appendChild(grad);svg.appendChild(defs);
+  svg.appendChild(el("path",{d:da,fill:"url(#revg)"}));
+  svg.appendChild(el("path",{d:dl,fill:"none",stroke:C.blue,"stroke-width":2.4,"stroke-linejoin":"round"}));
+  const cross=el("line",{x1:0,y1:padT,x2:0,y2:H-padB,stroke:C.axis,"stroke-width":1,opacity:0});svg.appendChild(cross);
+  const dot=el("circle",{r:4.5,fill:C.blue,stroke:"#0d0d0d","stroke-width":1.5,opacity:0});svg.appendChild(dot);
+  const over=el("rect",{x:padL,y:padT,width:W-padL-padR,height:H-padT-padB,fill:"transparent",class:"hoverable"});
+  over.addEventListener("mousemove",e=>{const rb=svg.getBoundingClientRect();const i=Math.round((e.clientX-rb.left)/rb.width*W-padL)/(W-padL-padR)*(pts.length-1);
+    const idx=Math.max(0,Math.min(pts.length-1,Math.round(i)));const p=pts[idx];
+    cross.setAttribute("x1",x(idx));cross.setAttribute("x2",x(idx));cross.setAttribute("opacity",1);
+    dot.setAttribute("cx",x(idx));dot.setAttribute("cy",y(p.y));dot.setAttribute("opacity",1);
+    showTT(`<b>${p.label}</b><div class="r"><span class="k">Revenue</span><b>${money(p.y)}</b></div><div class="r"><span class="k">New customers</span><b>${p.cust.toLocaleString()}</b></div><div class="r"><span class="k">ROAS</span><b>${p.roas}×</b></div>`,e.clientX,e.clientY);});
+  over.addEventListener("mouseleave",()=>{hideTT();cross.setAttribute("opacity",0);dot.setAttribute("opacity",0);});
+  svg.appendChild(over);
+  mount.innerHTML="";mount.appendChild(svg);
+}
+
+/* ---- centered log-width funnel ---- */
+function funnel(mount, stages){
+  const W=520,rh=40,padT=6,padB=8,cx=W/2-40;
+  const rowH=48; const H=padT+stages.length*rowH+padB;
+  const maxL=Math.log10(stages[0].value);
+  const widths=stages.map(s=>Math.log10(s.value)/maxL);
+  const seq=["#256abf","#2a78d6","#3987e5","#5598e7","#6da7ec","#86b6ef"];
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`});
+  stages.forEach((s,i)=>{
+    const y=padT+i*rowH; const w=widths[i]*(W*0.62);
+    const rect=el("rect",{x:cx-w/2,y:y+6,width:w,height:rh-14,rx:5,fill:seq[i],class:"hoverable"});
+    rect.addEventListener("mousemove",e=>showTT(`<b>${s.stage}</b><div class="r"><span class="k">Volume</span><b>${s.value.toLocaleString()}</b></div><div class="r"><span class="k">Step conv.</span><b>${s.step_cvr}%</b></div><div class="r"><span class="k">of top</span><b>${s.pct_of_top}%</b></div>`,e.clientX,e.clientY));
+    rect.addEventListener("mouseleave",hideTT);svg.appendChild(rect);
+    const nm=el("text",{x:cx,y:y+rh/2-1,"text-anchor":"middle",fill:"#0b0b0b","font-size":12,"font-weight":700});nm.textContent=s.stage;svg.appendChild(nm);
+    const vv=el("text",{x:cx+ (W*0.32),y:y+rh/2-4,"text-anchor":"end",class:"val-lbl"});vv.textContent=numShort(s.value);svg.appendChild(vv);
+    const cv=el("text",{x:cx+ (W*0.32),y:y+rh/2+10,"text-anchor":"end",class:"axis-lbl"});cv.textContent=i>0?("↓ "+s.step_cvr+"%"):"top of funnel";svg.appendChild(cv);
+  });
+  mount.innerHTML="";mount.appendChild(svg);
+}
+
+/* ---- cohort retention heatmap ---- */
+function heatmap(mount, coh){
+  const rows=coh.cohorts, cols=coh.months, m=coh.matrix;
+  const cell=42, gap=3, padL=64, padT=24;
+  const W=padL+cols.length*(cell+gap), H=padT+rows.length*(20+gap)+24;
+  const cw=(W-padL-8)/cols.length - gap, chh=18;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`});
+  // scale: retention 30..100 -> blue steps
+  const steps=["#0d366b","#104281","#184f95","#1c5cab","#256abf","#2a78d6","#3987e5","#5598e7","#6da7ec","#86b6ef","#9ec5f4","#b7d3f6","#cde2fb"];
+  const col=v=>{if(v==null)return "transparent";const t=Math.max(0,Math.min(1,(v-33)/(100-33)));return steps[Math.round((1-t)*(steps.length-1))];};
+  cols.forEach((c,j)=>{const t=el("text",{x:padL+j*(cw+gap)+cw/2,y:padT-8,"text-anchor":"middle",class:"axis-lbl"});t.textContent="M"+c;svg.appendChild(t);});
+  rows.forEach((r,i)=>{const y=padT+i*(chh+gap);
+    const rl=el("text",{x:padL-8,y:y+chh/2+4,"text-anchor":"end",class:"axis-lbl"});rl.textContent=r;svg.appendChild(rl);
+    m[i].forEach((v,j)=>{ if(v==null)return; const x=padL+j*(cw+gap);
+      const rect=el("rect",{x,y,width:cw,height:chh,rx:3,fill:col(v),class:"hoverable"});
+      rect.addEventListener("mousemove",e=>showTT(`<b>${r} cohort</b><div class="r"><span class="k">Month ${cols[j]}</span><b>${v}% retained</b></div>`,e.clientX,e.clientY));
+      rect.addEventListener("mouseleave",hideTT);svg.appendChild(rect);
+      if(cols[j]===0||v>=60||(cols[j]%4===0)){const tv=el("text",{x:x+cw/2,y:y+chh/2+4,"text-anchor":"middle","font-size":10,"font-weight":600,fill:v>65?"#0b0b0b":"#fff"});tv.textContent=Math.round(v);svg.appendChild(tv);}
+    });
+  });
+  mount.innerHTML="";mount.appendChild(svg);
+}
+
+/* ---- render ---- */
+// Revenue trend
+areaTrend(document.getElementById("revTrend"),
+  DATA.monthly.map(m=>({label:m.month.slice(2),y:m.revenue,cust:m.new_customers,roas:m.roas})),{});
+
+// ROAS by channel (paid only, diverging around breakeven)
+(function(){
+  const ch=DATA.channels.filter(c=>c.roas!=null).sort((a,b)=>b.roas-a.roas);
+  hbars(document.getElementById("roas"),
+    ch.map(c=>({label:c.channel,value:c.roas,color:c.roas>=1?C.blue:C.red,
+      tip:`<b>${c.channel}</b><div class="r"><span class="k">ROAS</span><b>${c.roas}×</b></div><div class="r"><span class="k">Spend</span><b>${money(c.spend)}</b></div><div class="r"><span class="k">Revenue</span><b>${money(c.revenue)}</b></div>`})),
+    {w:520,rh:30,gap:12,padL:120,padR:50,max:3.3,ticks:3,refLine:1,refLabel:"breakeven",fmtVal:v=>v+"×",fmtTick:v=>v.toFixed(1)+"×"});
+})();
+
+// CAC by channel (paid only)
+(function(){
+  const ch=DATA.channels.filter(c=>c.cac>0).sort((a,b)=>a.cac-b.cac);
+  hbars(document.getElementById("cac"),
+    ch.map(c=>({label:c.channel,value:c.cac,color:C.orange,
+      tip:`<b>${c.channel}</b><div class="r"><span class="k">CAC</span><b>${money(c.cac)}</b></div><div class="r"><span class="k">Customers</span><b>${c.new_customers.toLocaleString()}</b></div>`})),
+    {w:520,rh:30,gap:12,padL:120,padR:60,fmtVal:v=>money(v),fmtTick:v=>"$"+Math.round(v)});
+})();
+
+// Funnel
+funnel(document.getElementById("funnel"),DATA.funnel);
+
+// Revenue by channel type
+(function(){
+  const cats=[C.aqua,C.violet,C.yellow,C.blue,C.magenta];
+  const rows=DATA.channel_type_mix.map((m,i)=>({label:m.channel_type,value:m.revenue,color:cats[i%cats.length],
+    tip:`<b>${m.channel_type}</b><div class="r"><span class="k">Revenue</span><b>${money(m.revenue)}</b></div><div class="r"><span class="k">Spend</span><b>${money(m.spend)}</b></div><div class="r"><span class="k">Customers</span><b>${Math.round(m.new_customers).toLocaleString()}</b></div>`}));
+  hbars(document.getElementById("mix"),rows,{w:520,rh:28,gap:12,padL:110,padR:64,fmtVal:v=>moneyShort(v),fmtTick:v=>moneyShort(v)});
+})();
+
+// Cohort heatmap
+heatmap(document.getElementById("cohort"),DATA.cohort);
+</script>
+</body>
+</html>

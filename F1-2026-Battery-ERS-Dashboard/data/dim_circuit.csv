@@ -1,0 +1,25 @@
+round,grand_prix,country,laps,length_km,base_laptime_s,braking_index,power_sensitivity,night_race
+1,Australian GP,Australia,58,5.278,78.5,0.62,0.7,Day
+2,Chinese GP,China,56,5.451,92.0,0.66,0.68,Day
+3,Japanese GP,Japan,53,5.807,89.5,0.55,0.66,Day
+4,Bahrain GP,Bahrain,57,5.412,91.0,0.78,0.72,Night
+5,Saudi Arabian GP,Saudi Arabia,50,6.174,88.0,0.58,0.8,Night
+6,Miami GP,USA,57,5.412,88.5,0.7,0.74,Day
+7,Canadian GP,Canada,70,4.361,73.5,0.9,0.76,Day
+8,Monaco GP,Monaco,78,3.337,72.5,0.72,0.45,Day
+9,Spanish GP,Spain,66,4.657,78.0,0.6,0.66,Day
+10,Austrian GP,Austria,71,4.318,65.5,0.8,0.72,Day
+11,British GP,UK,52,5.891,88.0,0.64,0.74,Day
+12,Belgian GP,Belgium,44,7.004,105.0,0.58,0.82,Day
+13,Hungarian GP,Hungary,70,4.381,77.0,0.74,0.55,Day
+14,Dutch GP,Netherlands,72,4.259,71.0,0.66,0.6,Day
+15,Italian GP,Italy,53,5.793,81.5,0.5,0.88,Day
+16,Azerbaijan GP,Azerbaijan,51,6.003,102.0,0.92,0.84,Day
+17,Singapore GP,Singapore,62,4.94,96.0,0.85,0.58,Night
+18,United States GP,USA,56,5.513,96.5,0.72,0.72,Day
+19,Mexican GP,Mexico,71,4.304,78.0,0.76,0.7,Day
+20,Brazilian GP,Brazil,71,4.309,71.5,0.78,0.68,Day
+21,Las Vegas GP,USA,50,6.201,95.0,0.68,0.86,Night
+22,Qatar GP,Qatar,57,5.419,84.0,0.6,0.72,Night
+23,Abu Dhabi GP,UAE,58,5.281,84.5,0.7,0.7,Night
+24,Emilia-Romagna GP,Italy,63,4.909,78.5,0.64,0.68,Day

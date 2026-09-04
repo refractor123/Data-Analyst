@@ -1,0 +1,1297 @@
+{
+ "kpis": {
+  "total_harvested_gj": 173.5,
+  "total_deployed_gj": 165.8,
+  "avg_regen_eff": 89.7,
+  "peak_power_kw": 350,
+  "avg_elec_split": 34.0,
+  "override_total": 6925,
+  "races": 24,
+  "laps": 28920
+ },
+ "team_energy": [
+  {
+   "team": "Mercedes",
+   "harvested": 17.6,
+   "deployed": 16.7,
+   "regen": 90.6
+  },
+  {
+   "team": "McLaren",
+   "harvested": 17.6,
+   "deployed": 16.8,
+   "regen": 91.5
+  },
+  {
+   "team": "Ferrari",
+   "harvested": 17.5,
+   "deployed": 16.7,
+   "regen": 90.8
+  },
+  {
+   "team": "Red Bull",
+   "harvested": 17.4,
+   "deployed": 16.6,
+   "regen": 90.2
+  },
+  {
+   "team": "Williams",
+   "harvested": 17.4,
+   "deployed": 16.9,
+   "regen": 89.8
+  },
+  {
+   "team": "Aston Martin",
+   "harvested": 17.3,
+   "deployed": 16.5,
+   "regen": 89.4
+  },
+  {
+   "team": "Alpine",
+   "harvested": 17.2,
+   "deployed": 16.4,
+   "regen": 88.9
+  },
+  {
+   "team": "Haas",
+   "harvested": 17.2,
+   "deployed": 16.5,
+   "regen": 88.7
+  },
+  {
+   "team": "Racing Bulls",
+   "harvested": 17.2,
+   "deployed": 16.3,
+   "regen": 88.8
+  },
+  {
+   "team": "Audi",
+   "harvested": 17.1,
+   "deployed": 16.4,
+   "regen": 88.3
+  }
+ ],
+ "driver_regen": [
+  {
+   "driver": "Lando Norris",
+   "team": "McLaren",
+   "regen": 91.5,
+   "harvested": 8.8
+  },
+  {
+   "driver": "Oscar Piastri",
+   "team": "McLaren",
+   "regen": 91.4,
+   "harvested": 8.8
+  },
+  {
+   "driver": "George Russell",
+   "team": "Mercedes",
+   "regen": 91.0,
+   "harvested": 8.8
+  },
+  {
+   "driver": "Max Verstappen",
+   "team": "Red Bull",
+   "regen": 91.0,
+   "harvested": 8.7
+  },
+  {
+   "driver": "Charles Leclerc",
+   "team": "Ferrari",
+   "regen": 90.8,
+   "harvested": 8.7
+  },
+  {
+   "driver": "Lewis Hamilton",
+   "team": "Ferrari",
+   "regen": 90.7,
+   "harvested": 8.8
+  },
+  {
+   "driver": "Kimi Antonelli",
+   "team": "Mercedes",
+   "regen": 90.2,
+   "harvested": 8.8
+  },
+  {
+   "driver": "Fernando Alonso",
+   "team": "Aston Martin",
+   "regen": 90.1,
+   "harvested": 8.6
+  },
+  {
+   "driver": "Carlos Sainz",
+   "team": "Williams",
+   "regen": 90.0,
+   "harvested": 8.7
+  },
+  {
+   "driver": "Alex Albon",
+   "team": "Williams",
+   "regen": 89.5,
+   "harvested": 8.7
+  },
+  {
+   "driver": "Yuki Tsunoda",
+   "team": "Red Bull",
+   "regen": 89.4,
+   "harvested": 8.7
+  },
+  {
+   "driver": "Pierre Gasly",
+   "team": "Alpine",
+   "regen": 89.2,
+   "harvested": 8.6
+  }
+ ],
+ "circuit_demand": [
+  {
+   "round": 16,
+   "grand_prix": "Azerbaijan GP",
+   "harvest_per_lap": 7.97,
+   "deploy_per_lap": 6.45
+  },
+  {
+   "round": 7,
+   "grand_prix": "Canadian GP",
+   "harvest_per_lap": 7.82,
+   "deploy_per_lap": 6.36
+  },
+  {
+   "round": 17,
+   "grand_prix": "Singapore GP",
+   "harvest_per_lap": 7.38,
+   "deploy_per_lap": 6.21
+  },
+  {
+   "round": 4,
+   "grand_prix": "Bahrain GP",
+   "harvest_per_lap": 6.76,
+   "deploy_per_lap": 6.29
+  },
+  {
+   "round": 20,
+   "grand_prix": "Brazilian GP",
+   "harvest_per_lap": 6.75,
+   "deploy_per_lap": 6.29
+  },
+  {
+   "round": 19,
+   "grand_prix": "Mexican GP",
+   "harvest_per_lap": 6.58,
+   "deploy_per_lap": 6.3
+  },
+  {
+   "round": 13,
+   "grand_prix": "Hungarian GP",
+   "harvest_per_lap": 6.42,
+   "deploy_per_lap": 6.24
+  },
+  {
+   "round": 18,
+   "grand_prix": "United States GP",
+   "harvest_per_lap": 6.27,
+   "deploy_per_lap": 5.95
+  },
+  {
+   "round": 8,
+   "grand_prix": "Monaco GP",
+   "harvest_per_lap": 6.25,
+   "deploy_per_lap": 6.05
+  },
+  {
+   "round": 10,
+   "grand_prix": "Austrian GP",
+   "harvest_per_lap": 6.13,
+   "deploy_per_lap": 6.11
+  },
+  {
+   "round": 23,
+   "grand_prix": "Abu Dhabi GP",
+   "harvest_per_lap": 6.08,
+   "deploy_per_lap": 5.93
+  },
+  {
+   "round": 6,
+   "grand_prix": "Miami GP",
+   "harvest_per_lap": 6.07,
+   "deploy_per_lap": 5.99
+  },
+  {
+   "round": 2,
+   "grand_prix": "Chinese GP",
+   "harvest_per_lap": 5.74,
+   "deploy_per_lap": 5.74
+  },
+  {
+   "round": 14,
+   "grand_prix": "Dutch GP",
+   "harvest_per_lap": 5.72,
+   "deploy_per_lap": 5.6
+  },
+  {
+   "round": 24,
+   "grand_prix": "Emilia-Romagna GP",
+   "harvest_per_lap": 5.56,
+   "deploy_per_lap": 5.53
+  },
+  {
+   "round": 1,
+   "grand_prix": "Australian GP",
+   "harvest_per_lap": 5.4,
+   "deploy_per_lap": 5.43
+  },
+  {
+   "round": 22,
+   "grand_prix": "Qatar GP",
+   "harvest_per_lap": 5.22,
+   "deploy_per_lap": 5.26
+  },
+  {
+   "round": 21,
+   "grand_prix": "Las Vegas GP",
+   "harvest_per_lap": 5.22,
+   "deploy_per_lap": 5.26
+  },
+  {
+   "round": 9,
+   "grand_prix": "Spanish GP",
+   "harvest_per_lap": 5.21,
+   "deploy_per_lap": 5.21
+  },
+  {
+   "round": 5,
+   "grand_prix": "Saudi Arabian GP",
+   "harvest_per_lap": 5.04,
+   "deploy_per_lap": 5.1
+  },
+  {
+   "round": 12,
+   "grand_prix": "Belgian GP",
+   "harvest_per_lap": 5.02,
+   "deploy_per_lap": 5.07
+  },
+  {
+   "round": 11,
+   "grand_prix": "British GP",
+   "harvest_per_lap": 4.93,
+   "deploy_per_lap": 4.97
+  },
+  {
+   "round": 3,
+   "grand_prix": "Japanese GP",
+   "harvest_per_lap": 4.77,
+   "deploy_per_lap": 4.81
+  },
+  {
+   "round": 15,
+   "grand_prix": "Italian GP",
+   "harvest_per_lap": 4.33,
+   "deploy_per_lap": 4.39
+  }
+ ],
+ "soc_trace": {
+  "grand_prix": "Bahrain GP",
+  "series": [
+   {
+    "driver": "Kimi Antonelli",
+    "team": "Mercedes",
+    "points": [
+     {
+      "lap": 1,
+      "soc": 93.0
+     },
+     {
+      "lap": 2,
+      "soc": 91.6
+     },
+     {
+      "lap": 3,
+      "soc": 96.0
+     },
+     {
+      "lap": 4,
+      "soc": 96.0
+     },
+     {
+      "lap": 5,
+      "soc": 96.0
+     },
+     {
+      "lap": 6,
+      "soc": 96.0
+     },
+     {
+      "lap": 7,
+      "soc": 96.0
+     },
+     {
+      "lap": 8,
+      "soc": 96.0
+     },
+     {
+      "lap": 9,
+      "soc": 96.0
+     },
+     {
+      "lap": 10,
+      "soc": 96.0
+     },
+     {
+      "lap": 11,
+      "soc": 96.0
+     },
+     {
+      "lap": 12,
+      "soc": 91.6
+     },
+     {
+      "lap": 13,
+      "soc": 96.0
+     },
+     {
+      "lap": 14,
+      "soc": 96.0
+     },
+     {
+      "lap": 15,
+      "soc": 96.0
+     },
+     {
+      "lap": 16,
+      "soc": 96.0
+     },
+     {
+      "lap": 17,
+      "soc": 90.6
+     },
+     {
+      "lap": 18,
+      "soc": 96.0
+     },
+     {
+      "lap": 19,
+      "soc": 96.0
+     },
+     {
+      "lap": 20,
+      "soc": 96.0
+     },
+     {
+      "lap": 21,
+      "soc": 92.8
+     },
+     {
+      "lap": 22,
+      "soc": 85.0
+     },
+     {
+      "lap": 23,
+      "soc": 86.3
+     },
+     {
+      "lap": 24,
+      "soc": 82.6
+     },
+     {
+      "lap": 25,
+      "soc": 92.0
+     },
+     {
+      "lap": 26,
+      "soc": 96.0
+     },
+     {
+      "lap": 27,
+      "soc": 96.0
+     },
+     {
+      "lap": 28,
+      "soc": 96.0
+     },
+     {
+      "lap": 29,
+      "soc": 96.0
+     },
+     {
+      "lap": 30,
+      "soc": 96.0
+     },
+     {
+      "lap": 31,
+      "soc": 96.0
+     },
+     {
+      "lap": 32,
+      "soc": 92.8
+     },
+     {
+      "lap": 33,
+      "soc": 89.0
+     },
+     {
+      "lap": 34,
+      "soc": 95.1
+     },
+     {
+      "lap": 35,
+      "soc": 96.0
+     },
+     {
+      "lap": 36,
+      "soc": 94.0
+     },
+     {
+      "lap": 37,
+      "soc": 94.7
+     },
+     {
+      "lap": 38,
+      "soc": 96.0
+     },
+     {
+      "lap": 39,
+      "soc": 92.6
+     },
+     {
+      "lap": 40,
+      "soc": 96.0
+     },
+     {
+      "lap": 41,
+      "soc": 96.0
+     },
+     {
+      "lap": 42,
+      "soc": 96.0
+     },
+     {
+      "lap": 43,
+      "soc": 89.5
+     },
+     {
+      "lap": 44,
+      "soc": 95.3
+     },
+     {
+      "lap": 45,
+      "soc": 96.0
+     },
+     {
+      "lap": 46,
+      "soc": 86.7
+     },
+     {
+      "lap": 47,
+      "soc": 86.8
+     },
+     {
+      "lap": 48,
+      "soc": 95.3
+     },
+     {
+      "lap": 49,
+      "soc": 96.0
+     },
+     {
+      "lap": 50,
+      "soc": 96.0
+     },
+     {
+      "lap": 51,
+      "soc": 96.0
+     },
+     {
+      "lap": 52,
+      "soc": 93.0
+     },
+     {
+      "lap": 53,
+      "soc": 96.0
+     },
+     {
+      "lap": 54,
+      "soc": 96.0
+     },
+     {
+      "lap": 55,
+      "soc": 96.0
+     },
+     {
+      "lap": 56,
+      "soc": 96.0
+     },
+     {
+      "lap": 57,
+      "soc": 92.4
+     }
+    ]
+   },
+   {
+    "driver": "Lando Norris",
+    "team": "McLaren",
+    "points": [
+     {
+      "lap": 1,
+      "soc": 96.0
+     },
+     {
+      "lap": 2,
+      "soc": 96.0
+     },
+     {
+      "lap": 3,
+      "soc": 96.0
+     },
+     {
+      "lap": 4,
+      "soc": 92.6
+     },
+     {
+      "lap": 5,
+      "soc": 96.0
+     },
+     {
+      "lap": 6,
+      "soc": 96.0
+     },
+     {
+      "lap": 7,
+      "soc": 96.0
+     },
+     {
+      "lap": 8,
+      "soc": 96.0
+     },
+     {
+      "lap": 9,
+      "soc": 96.0
+     },
+     {
+      "lap": 10,
+      "soc": 96.0
+     },
+     {
+      "lap": 11,
+      "soc": 96.0
+     },
+     {
+      "lap": 12,
+      "soc": 96.0
+     },
+     {
+      "lap": 13,
+      "soc": 96.0
+     },
+     {
+      "lap": 14,
+      "soc": 96.0
+     },
+     {
+      "lap": 15,
+      "soc": 96.0
+     },
+     {
+      "lap": 16,
+      "soc": 96.0
+     },
+     {
+      "lap": 17,
+      "soc": 96.0
+     },
+     {
+      "lap": 18,
+      "soc": 96.0
+     },
+     {
+      "lap": 19,
+      "soc": 96.0
+     },
+     {
+      "lap": 20,
+      "soc": 96.0
+     },
+     {
+      "lap": 21,
+      "soc": 96.0
+     },
+     {
+      "lap": 22,
+      "soc": 96.0
+     },
+     {
+      "lap": 23,
+      "soc": 94.5
+     },
+     {
+      "lap": 24,
+      "soc": 94.1
+     },
+     {
+      "lap": 25,
+      "soc": 96.0
+     },
+     {
+      "lap": 26,
+      "soc": 96.0
+     },
+     {
+      "lap": 27,
+      "soc": 96.0
+     },
+     {
+      "lap": 28,
+      "soc": 96.0
+     },
+     {
+      "lap": 29,
+      "soc": 96.0
+     },
+     {
+      "lap": 30,
+      "soc": 96.0
+     },
+     {
+      "lap": 31,
+      "soc": 95.2
+     },
+     {
+      "lap": 32,
+      "soc": 96.0
+     },
+     {
+      "lap": 33,
+      "soc": 96.0
+     },
+     {
+      "lap": 34,
+      "soc": 96.0
+     },
+     {
+      "lap": 35,
+      "soc": 96.0
+     },
+     {
+      "lap": 36,
+      "soc": 95.8
+     },
+     {
+      "lap": 37,
+      "soc": 96.0
+     },
+     {
+      "lap": 38,
+      "soc": 96.0
+     },
+     {
+      "lap": 39,
+      "soc": 96.0
+     },
+     {
+      "lap": 40,
+      "soc": 96.0
+     },
+     {
+      "lap": 41,
+      "soc": 96.0
+     },
+     {
+      "lap": 42,
+      "soc": 96.0
+     },
+     {
+      "lap": 43,
+      "soc": 96.0
+     },
+     {
+      "lap": 44,
+      "soc": 96.0
+     },
+     {
+      "lap": 45,
+      "soc": 96.0
+     },
+     {
+      "lap": 46,
+      "soc": 96.0
+     },
+     {
+      "lap": 47,
+      "soc": 96.0
+     },
+     {
+      "lap": 48,
+      "soc": 96.0
+     },
+     {
+      "lap": 49,
+      "soc": 96.0
+     },
+     {
+      "lap": 50,
+      "soc": 96.0
+     },
+     {
+      "lap": 51,
+      "soc": 96.0
+     },
+     {
+      "lap": 52,
+      "soc": 96.0
+     },
+     {
+      "lap": 53,
+      "soc": 96.0
+     },
+     {
+      "lap": 54,
+      "soc": 96.0
+     },
+     {
+      "lap": 55,
+      "soc": 96.0
+     },
+     {
+      "lap": 56,
+      "soc": 96.0
+     },
+     {
+      "lap": 57,
+      "soc": 96.0
+     }
+    ]
+   },
+   {
+    "driver": "Yuki Tsunoda",
+    "team": "Red Bull",
+    "points": [
+     {
+      "lap": 1,
+      "soc": 78.6
+     },
+     {
+      "lap": 2,
+      "soc": 82.1
+     },
+     {
+      "lap": 3,
+      "soc": 77.4
+     },
+     {
+      "lap": 4,
+      "soc": 76.2
+     },
+     {
+      "lap": 5,
+      "soc": 82.7
+     },
+     {
+      "lap": 6,
+      "soc": 75.9
+     },
+     {
+      "lap": 7,
+      "soc": 83.2
+     },
+     {
+      "lap": 8,
+      "soc": 91.5
+     },
+     {
+      "lap": 9,
+      "soc": 93.8
+     },
+     {
+      "lap": 10,
+      "soc": 91.1
+     },
+     {
+      "lap": 11,
+      "soc": 87.6
+     },
+     {
+      "lap": 12,
+      "soc": 95.8
+     },
+     {
+      "lap": 13,
+      "soc": 96.0
+     },
+     {
+      "lap": 14,
+      "soc": 96.0
+     },
+     {
+      "lap": 15,
+      "soc": 96.0
+     },
+     {
+      "lap": 16,
+      "soc": 94.5
+     },
+     {
+      "lap": 17,
+      "soc": 96.0
+     },
+     {
+      "lap": 18,
+      "soc": 96.0
+     },
+     {
+      "lap": 19,
+      "soc": 94.6
+     },
+     {
+      "lap": 20,
+      "soc": 87.9
+     },
+     {
+      "lap": 21,
+      "soc": 96.0
+     },
+     {
+      "lap": 22,
+      "soc": 96.0
+     },
+     {
+      "lap": 23,
+      "soc": 95.2
+     },
+     {
+      "lap": 24,
+      "soc": 96.0
+     },
+     {
+      "lap": 25,
+      "soc": 95.3
+     },
+     {
+      "lap": 26,
+      "soc": 96.0
+     },
+     {
+      "lap": 27,
+      "soc": 96.0
+     },
+     {
+      "lap": 28,
+      "soc": 91.3
+     },
+     {
+      "lap": 29,
+      "soc": 96.0
+     },
+     {
+      "lap": 30,
+      "soc": 96.0
+     },
+     {
+      "lap": 31,
+      "soc": 96.0
+     },
+     {
+      "lap": 32,
+      "soc": 95.6
+     },
+     {
+      "lap": 33,
+      "soc": 96.0
+     },
+     {
+      "lap": 34,
+      "soc": 96.0
+     },
+     {
+      "lap": 35,
+      "soc": 96.0
+     },
+     {
+      "lap": 36,
+      "soc": 96.0
+     },
+     {
+      "lap": 37,
+      "soc": 96.0
+     },
+     {
+      "lap": 38,
+      "soc": 96.0
+     },
+     {
+      "lap": 39,
+      "soc": 96.0
+     },
+     {
+      "lap": 40,
+      "soc": 93.4
+     },
+     {
+      "lap": 41,
+      "soc": 96.0
+     },
+     {
+      "lap": 42,
+      "soc": 96.0
+     },
+     {
+      "lap": 43,
+      "soc": 96.0
+     },
+     {
+      "lap": 44,
+      "soc": 96.0
+     },
+     {
+      "lap": 45,
+      "soc": 96.0
+     },
+     {
+      "lap": 46,
+      "soc": 96.0
+     },
+     {
+      "lap": 47,
+      "soc": 96.0
+     },
+     {
+      "lap": 48,
+      "soc": 96.0
+     },
+     {
+      "lap": 49,
+      "soc": 96.0
+     },
+     {
+      "lap": 50,
+      "soc": 96.0
+     },
+     {
+      "lap": 51,
+      "soc": 96.0
+     },
+     {
+      "lap": 52,
+      "soc": 93.9
+     },
+     {
+      "lap": 53,
+      "soc": 96.0
+     },
+     {
+      "lap": 54,
+      "soc": 96.0
+     },
+     {
+      "lap": 55,
+      "soc": 91.8
+     },
+     {
+      "lap": 56,
+      "soc": 82.3
+     },
+     {
+      "lap": 57,
+      "soc": 79.2
+     }
+    ]
+   },
+   {
+    "driver": "Charles Leclerc",
+    "team": "Ferrari",
+    "points": [
+     {
+      "lap": 1,
+      "soc": 91.4
+     },
+     {
+      "lap": 2,
+      "soc": 96.0
+     },
+     {
+      "lap": 3,
+      "soc": 96.0
+     },
+     {
+      "lap": 4,
+      "soc": 92.7
+     },
+     {
+      "lap": 5,
+      "soc": 96.0
+     },
+     {
+      "lap": 6,
+      "soc": 96.0
+     },
+     {
+      "lap": 7,
+      "soc": 96.0
+     },
+     {
+      "lap": 8,
+      "soc": 96.0
+     },
+     {
+      "lap": 9,
+      "soc": 96.0
+     },
+     {
+      "lap": 10,
+      "soc": 96.0
+     },
+     {
+      "lap": 11,
+      "soc": 96.0
+     },
+     {
+      "lap": 12,
+      "soc": 96.0
+     },
+     {
+      "lap": 13,
+      "soc": 96.0
+     },
+     {
+      "lap": 14,
+      "soc": 96.0
+     },
+     {
+      "lap": 15,
+      "soc": 96.0
+     },
+     {
+      "lap": 16,
+      "soc": 96.0
+     },
+     {
+      "lap": 17,
+      "soc": 96.0
+     },
+     {
+      "lap": 18,
+      "soc": 96.0
+     },
+     {
+      "lap": 19,
+      "soc": 96.0
+     },
+     {
+      "lap": 20,
+      "soc": 96.0
+     },
+     {
+      "lap": 21,
+      "soc": 96.0
+     },
+     {
+      "lap": 22,
+      "soc": 96.0
+     },
+     {
+      "lap": 23,
+      "soc": 96.0
+     },
+     {
+      "lap": 24,
+      "soc": 96.0
+     },
+     {
+      "lap": 25,
+      "soc": 96.0
+     },
+     {
+      "lap": 26,
+      "soc": 96.0
+     },
+     {
+      "lap": 27,
+      "soc": 96.0
+     },
+     {
+      "lap": 28,
+      "soc": 96.0
+     },
+     {
+      "lap": 29,
+      "soc": 96.0
+     },
+     {
+      "lap": 30,
+      "soc": 96.0
+     },
+     {
+      "lap": 31,
+      "soc": 96.0
+     },
+     {
+      "lap": 32,
+      "soc": 96.0
+     },
+     {
+      "lap": 33,
+      "soc": 96.0
+     },
+     {
+      "lap": 34,
+      "soc": 96.0
+     },
+     {
+      "lap": 35,
+      "soc": 96.0
+     },
+     {
+      "lap": 36,
+      "soc": 96.0
+     },
+     {
+      "lap": 37,
+      "soc": 96.0
+     },
+     {
+      "lap": 38,
+      "soc": 96.0
+     },
+     {
+      "lap": 39,
+      "soc": 96.0
+     },
+     {
+      "lap": 40,
+      "soc": 96.0
+     },
+     {
+      "lap": 41,
+      "soc": 96.0
+     },
+     {
+      "lap": 42,
+      "soc": 96.0
+     },
+     {
+      "lap": 43,
+      "soc": 96.0
+     },
+     {
+      "lap": 44,
+      "soc": 96.0
+     },
+     {
+      "lap": 45,
+      "soc": 96.0
+     },
+     {
+      "lap": 46,
+      "soc": 96.0
+     },
+     {
+      "lap": 47,
+      "soc": 96.0
+     },
+     {
+      "lap": 48,
+      "soc": 96.0
+     },
+     {
+      "lap": 49,
+      "soc": 96.0
+     },
+     {
+      "lap": 50,
+      "soc": 96.0
+     },
+     {
+      "lap": 51,
+      "soc": 96.0
+     },
+     {
+      "lap": 52,
+      "soc": 96.0
+     },
+     {
+      "lap": 53,
+      "soc": 96.0
+     },
+     {
+      "lap": 54,
+      "soc": 96.0
+     },
+     {
+      "lap": 55,
+      "soc": 96.0
+     },
+     {
+      "lap": 56,
+      "soc": 96.0
+     },
+     {
+      "lap": 57,
+      "soc": 96.0
+     }
+    ]
+   }
+  ]
+ },
+ "deploy_pace": [
+  {
+   "team": "Alpine",
+   "deploy": 5.66,
+   "laptime": 80.13,
+   "power": 205.0
+  },
+  {
+   "team": "Aston Martin",
+   "deploy": 5.71,
+   "laptime": 80.13,
+   "power": 208.0
+  },
+  {
+   "team": "Audi",
+   "deploy": 5.69,
+   "laptime": 80.29,
+   "power": 207.0
+  },
+  {
+   "team": "Ferrari",
+   "deploy": 5.79,
+   "laptime": 79.85,
+   "power": 211.0
+  },
+  {
+   "team": "Haas",
+   "deploy": 5.71,
+   "laptime": 80.17,
+   "power": 208.0
+  },
+  {
+   "team": "McLaren",
+   "deploy": 5.8,
+   "laptime": 79.73,
+   "power": 211.0
+  },
+  {
+   "team": "Mercedes",
+   "deploy": 5.78,
+   "laptime": 79.81,
+   "power": 210.0
+  },
+  {
+   "team": "Racing Bulls",
+   "deploy": 5.63,
+   "laptime": 80.13,
+   "power": 204.0
+  },
+  {
+   "team": "Red Bull",
+   "deploy": 5.75,
+   "laptime": 79.89,
+   "power": 210.0
+  },
+  {
+   "team": "Williams",
+   "deploy": 5.83,
+   "laptime": 80.03,
+   "power": 213.0
+  }
+ ]
+}

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F1 2026 Battery &amp; ERS Analytics</title>
+<style>
+  :root{
+    --surface:#1a1a19; --page:#0d0d0d; --card:#161615;
+    --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+    --blue:#3987e5; --orange:#d95926; --aqua:#199e70; --yellow:#c98500;
+    --magenta:#d55181; --violet:#9085e9; --red:#e66767;
+    --good:#0ca30c; --critical:#d03b3b;
+    --accent:#e10600; /* F1 red for chrome only */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--page); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif; line-height:1.45;
+    -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px; margin:0 auto; padding:28px 20px 64px;}
+  .mono{font-variant-numeric:tabular-nums; font-feature-settings:"tnum";}
+
+  /* Header */
+  header{border-top:3px solid var(--accent); padding-top:18px; margin-bottom:8px;}
+  .eyebrow{display:flex; gap:10px; align-items:center; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); font-weight:600;}
+  .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+  h1{font-size:30px; line-height:1.12; margin:12px 0 6px; letter-spacing:-.02em;}
+  h1 .hl{color:var(--accent);}
+  .sub{color:var(--ink2); font-size:15px; max-width:760px;}
+  .meta{margin-top:14px; display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{font-size:11.5px; color:var(--ink2); border:1px solid var(--border);
+    border-radius:999px; padding:4px 11px; background:var(--card);}
+
+  /* KPI row */
+  .kpis{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin:24px 0 8px;}
+  .kpi{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 15px;}
+  .kpi .label{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:600;}
+  .kpi .val{font-size:26px; font-weight:650; margin-top:8px; letter-spacing:-.01em;}
+  .kpi .unit{font-size:13px; color:var(--ink2); font-weight:500; margin-left:3px;}
+  .kpi .foot{font-size:11.5px; color:var(--muted); margin-top:3px;}
+
+  /* Grid + cards */
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:16px;}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 18px 12px;}
+  .card.wide{grid-column:1 / -1;}
+  .card h2{font-size:15.5px; margin:0 0 2px; letter-spacing:-.01em;}
+  .card .desc{font-size:12.5px; color:var(--muted); margin:0 0 14px;}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin:2px 0 14px; font-size:12px; color:var(--ink2);}
+  .legend .it{display:flex; align-items:center; gap:6px;}
+  .legend .sw{width:11px;height:11px;border-radius:3px;}
+  .insight{grid-column:1/-1; background:linear-gradient(90deg,rgba(225,6,0,.10),rgba(22,22,21,0) 60%);
+    border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:10px;
+    padding:14px 16px; font-size:13.5px; color:var(--ink2);}
+  .insight b{color:var(--ink);}
+
+  svg{display:block; width:100%; overflow:visible;}
+  text{font-family:inherit;}
+  .axis-lbl{fill:var(--muted); font-size:11px;}
+  .val-lbl{fill:var(--ink); font-size:11.5px; font-weight:600;}
+  .cat-lbl{fill:var(--ink2); font-size:12px;}
+  .grline{stroke:var(--grid); stroke-width:1;}
+  .baseline{stroke:var(--axis); stroke-width:1;}
+
+  /* tooltip */
+  .tt{position:fixed; pointer-events:none; background:#0b0b0b; color:#fff; border:1px solid var(--border);
+    border-radius:8px; padding:8px 10px; font-size:12px; opacity:0; transition:opacity .08s;
+    box-shadow:0 6px 24px rgba(0,0,0,.5); z-index:50; max-width:260px;}
+  .tt b{color:#fff;} .tt .r{display:flex; justify-content:space-between; gap:16px;}
+  .tt .k{color:var(--ink2);}
+  .hoverable{cursor:crosshair;}
+  footer{margin-top:40px; color:var(--muted); font-size:12px; border-top:1px solid var(--border); padding-top:16px;}
+  a{color:var(--blue); text-decoration:none;}
+  @media (max-width:900px){ .kpis{grid-template-columns:repeat(3,1fr);} .grid{grid-template-columns:1fr;} h1{font-size:24px;} }
+  @media (max-width:560px){ .kpis{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span class="dot"></span> Formula 1 · 2026 Power Unit Regulations · Season Telemetry</div>
+    <h1>Electrifying F1: The <span class="hl">2026 Battery &amp; ERS</span> Revolution</h1>
+    <p class="sub">The 2026 rules nearly triple electrical deployment to <b>350&nbsp;kW</b>, drop the MGU-H, and push the
+      power split toward <b>50/50</b> on 100% sustainable fuel. This dashboard analyses a full 24-round season of
+      lap-level energy-recovery telemetry — how every team harvests, stores and deploys battery energy.</p>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="grid">
+    <div class="insight" id="insight"></div>
+
+    <div class="card wide">
+      <h2>The deployment leap: 2025 vs 2026 electrical power</h2>
+      <p class="desc">Peak MGU-K electrical output and its share of total power-unit power. The 2026 regulations
+        raise deployable electric power from 120&nbsp;kW to 350&nbsp;kW (+192%).</p>
+      <div id="leap"></div>
+    </div>
+
+    <div class="card">
+      <h2>Energy harvested vs deployed by team</h2>
+      <p class="desc">Season totals (gigajoules). Deployment above harvest is drawn from the battery store.</p>
+      <div class="legend">
+        <span class="it"><span class="sw" style="background:var(--aqua)"></span>Harvested (recovered)</span>
+        <span class="it"><span class="sw" style="background:var(--orange)"></span>Deployed (used)</span>
+      </div>
+      <div id="teamEnergy"></div>
+    </div>
+
+    <div class="card">
+      <h2>Energy-recovery efficiency leaderboard</h2>
+      <p class="desc">Average share of braking energy captured by the MGU-K, by driver (top 12).</p>
+      <div id="regen"></div>
+    </div>
+
+    <div class="card">
+      <h2>Circuit energy demand</h2>
+      <p class="desc">Average energy harvested per lap (MJ) — heavy-braking street circuits recover the most.</p>
+      <div id="circuit"></div>
+    </div>
+
+    <div class="card">
+      <h2>Battery state of charge · Bahrain GP</h2>
+      <p class="desc">Lap-by-lap battery charge (%) for the top-4 finishers. Watch the harvest/deploy sawtooth.</p>
+      <div class="legend" id="socLegend"></div>
+      <div id="soc"></div>
+    </div>
+  </div>
+
+  <footer>
+    <b>Synthetic dataset</b> — physically-modelled to the 2026 F1 technical regulations (350&nbsp;kW cap, MGU-H removed,
+    ~50/50 power split). Built for portfolio demonstration; not official FIA telemetry.
+    Data model: one lap-level fact table (28,920 rows) + team / driver / circuit dimensions ·
+    Python · designed for Tableau &amp; Power BI.
+  </footer>
+</div>
+
+<div class="tt" id="tt"></div>
+
+<script>
+const DATA = {"kpis": {"total_harvested_gj": 173.5, "total_deployed_gj": 165.8, "avg_regen_eff": 89.7, "peak_power_kw": 350, "avg_elec_split": 34.0, "override_total": 6925, "races": 24, "laps": 28920}, "team_energy": [{"team": "Mercedes", "harvested": 17.6, "deployed": 16.7, "regen": 90.6}, {"team": "McLaren", "harvested": 17.6, "deployed": 16.8, "regen": 91.5}, {"team": "Ferrari", "harvested": 17.5, "deployed": 16.7, "regen": 90.8}, {"team": "Red Bull", "harvested": 17.4, "deployed": 16.6, "regen": 90.2}, {"team": "Williams", "harvested": 17.4, "deployed": 16.9, "regen": 89.8}, {"team": "Aston Martin", "harvested": 17.3, "deployed": 16.5, "regen": 89.4}, {"team": "Alpine", "harvested": 17.2, "deployed": 16.4, "regen": 88.9}, {"team": "Haas", "harvested": 17.2, "deployed": 16.5, "regen": 88.7}, {"team": "Racing Bulls", "harvested": 17.2, "deployed": 16.3, "regen": 88.8}, {"team": "Audi", "harvested": 17.1, "deployed": 16.4, "regen": 88.3}], "driver_regen": [{"driver": "Lando Norris", "team": "McLaren", "regen": 91.5, "harvested": 8.8}, {"driver": "Oscar Piastri", "team": "McLaren", "regen": 91.4, "harvested": 8.8}, {"driver": "George Russell", "team": "Mercedes", "regen": 91.0, "harvested": 8.8}, {"driver": "Max Verstappen", "team": "Red Bull", "regen": 91.0, "harvested": 8.7}, {"driver": "Charles Leclerc", "team": "Ferrari", "regen": 90.8, "harvested": 8.7}, {"driver": "Lewis Hamilton", "team": "Ferrari", "regen": 90.7, "harvested": 8.8}, {"driver": "Kimi Antonelli", "team": "Mercedes", "regen": 90.2, "harvested": 8.8}, {"driver": "Fernando Alonso", "team": "Aston Martin", "regen": 90.1, "harvested": 8.6}, {"driver": "Carlos Sainz", "team": "Williams", "regen": 90.0, "harvested": 8.7}, {"driver": "Alex Albon", "team": "Williams", "regen": 89.5, "harvested": 8.7}, {"driver": "Yuki Tsunoda", "team": "Red Bull", "regen": 89.4, "harvested": 8.7}, {"driver": "Pierre Gasly", "team": "Alpine", "regen": 89.2, "harvested": 8.6}], "circuit_demand": [{"round": 16, "grand_prix": "Azerbaijan GP", "harvest_per_lap": 7.97, "deploy_per_lap": 6.45}, {"round": 7, "grand_prix": "Canadian GP", "harvest_per_lap": 7.82, "deploy_per_lap": 6.36}, {"round": 17, "grand_prix": "Singapore GP", "harvest_per_lap": 7.38, "deploy_per_lap": 6.21}, {"round": 4, "grand_prix": "Bahrain GP", "harvest_per_lap": 6.76, "deploy_per_lap": 6.29}, {"round": 20, "grand_prix": "Brazilian GP", "harvest_per_lap": 6.75, "deploy_per_lap": 6.29}, {"round": 19, "grand_prix": "Mexican GP", "harvest_per_lap": 6.58, "deploy_per_lap": 6.3}, {"round": 13, "grand_prix": "Hungarian GP", "harvest_per_lap": 6.42, "deploy_per_lap": 6.24}, {"round": 18, "grand_prix": "United States GP", "harvest_per_lap": 6.27, "deploy_per_lap": 5.95}, {"round": 8, "grand_prix": "Monaco GP", "harvest_per_lap": 6.25, "deploy_per_lap": 6.05}, {"round": 10, "grand_prix": "Austrian GP", "harvest_per_lap": 6.13, "deploy_per_lap": 6.11}, {"round": 23, "grand_prix": "Abu Dhabi GP", "harvest_per_lap": 6.08, "deploy_per_lap": 5.93}, {"round": 6, "grand_prix": "Miami GP", "harvest_per_lap": 6.07, "deploy_per_lap": 5.99}, {"round": 2, "grand_prix": "Chinese GP", "harvest_per_lap": 5.74, "deploy_per_lap": 5.74}, {"round": 14, "grand_prix": "Dutch GP", "harvest_per_lap": 5.72, "deploy_per_lap": 5.6}, {"round": 24, "grand_prix": "Emilia-Romagna GP", "harvest_per_lap": 5.56, "deploy_per_lap": 5.53}, {"round": 1, "grand_prix": "Australian GP", "harvest_per_lap": 5.4, "deploy_per_lap": 5.43}, {"round": 22, "grand_prix": "Qatar GP", "harvest_per_lap": 5.22, "deploy_per_lap": 5.26}, {"round": 21, "grand_prix": "Las Vegas GP", "harvest_per_lap": 5.22, "deploy_per_lap": 5.26}, {"round": 9, "grand_prix": "Spanish GP", "harvest_per_lap": 5.21, "deploy_per_lap": 5.21}, {"round": 5, "grand_prix": "Saudi Arabian GP", "harvest_per_lap": 5.04, "deploy_per_lap": 5.1}, {"round": 12, "grand_prix": "Belgian GP", "harvest_per_lap": 5.02, "deploy_per_lap": 5.07}, {"round": 11, "grand_prix": "British GP", "harvest_per_lap": 4.93, "deploy_per_lap": 4.97}, {"round": 3, "grand_prix": "Japanese GP", "harvest_per_lap": 4.77, "deploy_per_lap": 4.81}, {"round": 15, "grand_prix": "Italian GP", "harvest_per_lap": 4.33, "deploy_per_lap": 4.39}], "soc_trace": {"grand_prix": "Bahrain GP", "series": [{"driver": "Kimi Antonelli", "team": "Mercedes", "points": [{"lap": 1, "soc": 93.0}, {"lap": 2, "soc": 91.6}, {"lap": 3, "soc": 96.0}, {"lap": 4, "soc": 96.0}, {"lap": 5, "soc": 96.0}, {"lap": 6, "soc": 96.0}, {"lap": 7, "soc": 96.0}, {"lap": 8, "soc": 96.0}, {"lap": 9, "soc": 96.0}, {"lap": 10, "soc": 96.0}, {"lap": 11, "soc": 96.0}, {"lap": 12, "soc": 91.6}, {"lap": 13, "soc": 96.0}, {"lap": 14, "soc": 96.0}, {"lap": 15, "soc": 96.0}, {"lap": 16, "soc": 96.0}, {"lap": 17, "soc": 90.6}, {"lap": 18, "soc": 96.0}, {"lap": 19, "soc": 96.0}, {"lap": 20, "soc": 96.0}, {"lap": 21, "soc": 92.8}, {"lap": 22, "soc": 85.0}, {"lap": 23, "soc": 86.3}, {"lap": 24, "soc": 82.6}, {"lap": 25, "soc": 92.0}, {"lap": 26, "soc": 96.0}, {"lap": 27, "soc": 96.0}, {"lap": 28, "soc": 96.0}, {"lap": 29, "soc": 96.0}, {"lap": 30, "soc": 96.0}, {"lap": 31, "soc": 96.0}, {"lap": 32, "soc": 92.8}, {"lap": 33, "soc": 89.0}, {"lap": 34, "soc": 95.1}, {"lap": 35, "soc": 96.0}, {"lap": 36, "soc": 94.0}, {"lap": 37, "soc": 94.7}, {"lap": 38, "soc": 96.0}, {"lap": 39, "soc": 92.6}, {"lap": 40, "soc": 96.0}, {"lap": 41, "soc": 96.0}, {"lap": 42, "soc": 96.0}, {"lap": 43, "soc": 89.5}, {"lap": 44, "soc": 95.3}, {"lap": 45, "soc": 96.0}, {"lap": 46, "soc": 86.7}, {"lap": 47, "soc": 86.8}, {"lap": 48, "soc": 95.3}, {"lap": 49, "soc": 96.0}, {"lap": 50, "soc": 96.0}, {"lap": 51, "soc": 96.0}, {"lap": 52, "soc": 93.0}, {"lap": 53, "soc": 96.0}, {"lap": 54, "soc": 96.0}, {"lap": 55, "soc": 96.0}, {"lap": 56, "soc": 96.0}, {"lap": 57, "soc": 92.4}]}, {"driver": "Lando Norris", "team": "McLaren", "points": [{"lap": 1, "soc": 96.0}, {"lap": 2, "soc": 96.0}, {"lap": 3, "soc": 96.0}, {"lap": 4, "soc": 92.6}, {"lap": 5, "soc": 96.0}, {"lap": 6, "soc": 96.0}, {"lap": 7, "soc": 96.0}, {"lap": 8, "soc": 96.0}, {"lap": 9, "soc": 96.0}, {"lap": 10, "soc": 96.0}, {"lap": 11, "soc": 96.0}, {"lap": 12, "soc": 96.0}, {"lap": 13, "soc": 96.0}, {"lap": 14, "soc": 96.0}, {"lap": 15, "soc": 96.0}, {"lap": 16, "soc": 96.0}, {"lap": 17, "soc": 96.0}, {"lap": 18, "soc": 96.0}, {"lap": 19, "soc": 96.0}, {"lap": 20, "soc": 96.0}, {"lap": 21, "soc": 96.0}, {"lap": 22, "soc": 96.0}, {"lap": 23, "soc": 94.5}, {"lap": 24, "soc": 94.1}, {"lap": 25, "soc": 96.0}, {"lap": 26, "soc": 96.0}, {"lap": 27, "soc": 96.0}, {"lap": 28, "soc": 96.0}, {"lap": 29, "soc": 96.0}, {"lap": 30, "soc": 96.0}, {"lap": 31, "soc": 95.2}, {"lap": 32, "soc": 96.0}, {"lap": 33, "soc": 96.0}, {"lap": 34, "soc": 96.0}, {"lap": 35, "soc": 96.0}, {"lap": 36, "soc": 95.8}, {"lap": 37, "soc": 96.0}, {"lap": 38, "soc": 96.0}, {"lap": 39, "soc": 96.0}, {"lap": 40, "soc": 96.0}, {"lap": 41, "soc": 96.0}, {"lap": 42, "soc": 96.0}, {"lap": 43, "soc": 96.0}, {"lap": 44, "soc": 96.0}, {"lap": 45, "soc": 96.0}, {"lap": 46, "soc": 96.0}, {"lap": 47, "soc": 96.0}, {"lap": 48, "soc": 96.0}, {"lap": 49, "soc": 96.0}, {"lap": 50, "soc": 96.0}, {"lap": 51, "soc": 96.0}, {"lap": 52, "soc": 96.0}, {"lap": 53, "soc": 96.0}, {"lap": 54, "soc": 96.0}, {"lap": 55, "soc": 96.0}, {"lap": 56, "soc": 96.0}, {"lap": 57, "soc": 96.0}]}, {"driver": "Yuki Tsunoda", "team": "Red Bull", "points": [{"lap": 1, "soc": 78.6}, {"lap": 2, "soc": 82.1}, {"lap": 3, "soc": 77.4}, {"lap": 4, "soc": 76.2}, {"lap": 5, "soc": 82.7}, {"lap": 6, "soc": 75.9}, {"lap": 7, "soc": 83.2}, {"lap": 8, "soc": 91.5}, {"lap": 9, "soc": 93.8}, {"lap": 10, "soc": 91.1}, {"lap": 11, "soc": 87.6}, {"lap": 12, "soc": 95.8}, {"lap": 13, "soc": 96.0}, {"lap": 14, "soc": 96.0}, {"lap": 15, "soc": 96.0}, {"lap": 16, "soc": 94.5}, {"lap": 17, "soc": 96.0}, {"lap": 18, "soc": 96.0}, {"lap": 19, "soc": 94.6}, {"lap": 20, "soc": 87.9}, {"lap": 21, "soc": 96.0}, {"lap": 22, "soc": 96.0}, {"lap": 23, "soc": 95.2}, {"lap": 24, "soc": 96.0}, {"lap": 25, "soc": 95.3}, {"lap": 26, "soc": 96.0}, {"lap": 27, "soc": 96.0}, {"lap": 28, "soc": 91.3}, {"lap": 29, "soc": 96.0}, {"lap": 30, "soc": 96.0}, {"lap": 31, "soc": 96.0}, {"lap": 32, "soc": 95.6}, {"lap": 33, "soc": 96.0}, {"lap": 34, "soc": 96.0}, {"lap": 35, "soc": 96.0}, {"lap": 36, "soc": 96.0}, {"lap": 37, "soc": 96.0}, {"lap": 38, "soc": 96.0}, {"lap": 39, "soc": 96.0}, {"lap": 40, "soc": 93.4}, {"lap": 41, "soc": 96.0}, {"lap": 42, "soc": 96.0}, {"lap": 43, "soc": 96.0}, {"lap": 44, "soc": 96.0}, {"lap": 45, "soc": 96.0}, {"lap": 46, "soc": 96.0}, {"lap": 47, "soc": 96.0}, {"lap": 48, "soc": 96.0}, {"lap": 49, "soc": 96.0}, {"lap": 50, "soc": 96.0}, {"lap": 51, "soc": 96.0}, {"lap": 52, "soc": 93.9}, {"lap": 53, "soc": 96.0}, {"lap": 54, "soc": 96.0}, {"lap": 55, "soc": 91.8}, {"lap": 56, "soc": 82.3}, {"lap": 57, "soc": 79.2}]}, {"driver": "Charles Leclerc", "team": "Ferrari", "points": [{"lap": 1, "soc": 91.4}, {"lap": 2, "soc": 96.0}, {"lap": 3, "soc": 96.0}, {"lap": 4, "soc": 92.7}, {"lap": 5, "soc": 96.0}, {"lap": 6, "soc": 96.0}, {"lap": 7, "soc": 96.0}, {"lap": 8, "soc": 96.0}, {"lap": 9, "soc": 96.0}, {"lap": 10, "soc": 96.0}, {"lap": 11, "soc": 96.0}, {"lap": 12, "soc": 96.0}, {"lap": 13, "soc": 96.0}, {"lap": 14, "soc": 96.0}, {"lap": 15, "soc": 96.0}, {"lap": 16, "soc": 96.0}, {"lap": 17, "soc": 96.0}, {"lap": 18, "soc": 96.0}, {"lap": 19, "soc": 96.0}, {"lap": 20, "soc": 96.0}, {"lap": 21, "soc": 96.0}, {"lap": 22, "soc": 96.0}, {"lap": 23, "soc": 96.0}, {"lap": 24, "soc": 96.0}, {"lap": 25, "soc": 96.0}, {"lap": 26, "soc": 96.0}, {"lap": 27, "soc": 96.0}, {"lap": 28, "soc": 96.0}, {"lap": 29, "soc": 96.0}, {"lap": 30, "soc": 96.0}, {"lap": 31, "soc": 96.0}, {"lap": 32, "soc": 96.0}, {"lap": 33, "soc": 96.0}, {"lap": 34, "soc": 96.0}, {"lap": 35, "soc": 96.0}, {"lap": 36, "soc": 96.0}, {"lap": 37, "soc": 96.0}, {"lap": 38, "soc": 96.0}, {"lap": 39, "soc": 96.0}, {"lap": 40, "soc": 96.0}, {"lap": 41, "soc": 96.0}, {"lap": 42, "soc": 96.0}, {"lap": 43, "soc": 96.0}, {"lap": 44, "soc": 96.0}, {"lap": 45, "soc": 96.0}, {"lap": 46, "soc": 96.0}, {"lap": 47, "soc": 96.0}, {"lap": 48, "soc": 96.0}, {"lap": 49, "soc": 96.0}, {"lap": 50, "soc": 96.0}, {"lap": 51, "soc": 96.0}, {"lap": 52, "soc": 96.0}, {"lap": 53, "soc": 96.0}, {"lap": 54, "soc": 96.0}, {"lap": 55, "soc": 96.0}, {"lap": 56, "soc": 96.0}, {"lap": 57, "soc": 96.0}]}]}, "deploy_pace": [{"team": "Alpine", "deploy": 5.66, "laptime": 80.13, "power": 205.0}, {"team": "Aston Martin", "deploy": 5.71, "laptime": 80.13, "power": 208.0}, {"team": "Audi", "deploy": 5.69, "laptime": 80.29, "power": 207.0}, {"team": "Ferrari", "deploy": 5.79, "laptime": 79.85, "power": 211.0}, {"team": "Haas", "deploy": 5.71, "laptime": 80.17, "power": 208.0}, {"team": "McLaren", "deploy": 5.8, "laptime": 79.73, "power": 211.0}, {"team": "Mercedes", "deploy": 5.78, "laptime": 79.81, "power": 210.0}, {"team": "Racing Bulls", "deploy": 5.63, "laptime": 80.13, "power": 204.0}, {"team": "Red Bull", "deploy": 5.75, "laptime": 79.89, "power": 210.0}, {"team": "Williams", "deploy": 5.83, "laptime": 80.03, "power": 213.0}]};
+const NS="http://www.w3.org/2000/svg";
+const C={blue:"#3987e5",orange:"#d95926",aqua:"#199e70",yellow:"#c98500",magenta:"#d55181",violet:"#9085e9",red:"#e66767",muted:"#898781",ink:"#fff",ink2:"#c3c2b7",grid:"#2c2c2a",axis:"#383835"};
+const el=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const tt=document.getElementById("tt");
+function showTT(html,x,y){tt.innerHTML=html;tt.style.opacity=1;const b=tt.getBoundingClientRect();let nx=x+14,ny=y+14;if(nx+b.width>innerWidth)nx=x-b.width-14;if(ny+b.height>innerHeight)ny=y-b.height-14;tt.style.left=nx+"px";tt.style.top=ny+"px";}
+function hideTT(){tt.style.opacity=0;}
+const fmt=n=>n.toLocaleString(undefined,{maximumFractionDigits:1});
+
+/* ---- Meta chips + KPIs ---- */
+const k=DATA.kpis;
+document.getElementById("meta").innerHTML=[
+  k.races+" Grands Prix", fmt(k.laps)+" laps analysed", "MGU-K only (no MGU-H)",
+  "100% sustainable fuel", "350 kW deployment cap"
+].map(t=>`<span class="chip">${t}</span>`).join("");
+
+const kpis=[
+  {label:"Energy harvested",val:fmt(k.total_harvested_gj),unit:"GJ",foot:"season, all cars"},
+  {label:"Energy deployed",val:fmt(k.total_deployed_gj),unit:"GJ",foot:"battery-assisted power"},
+  {label:"Avg regen efficiency",val:k.avg_regen_eff,unit:"%",foot:"braking energy captured"},
+  {label:"Peak electric power",val:k.peak_power_kw,unit:"kW",foot:"regulation ceiling"},
+  {label:"Avg electric split",val:k.avg_elec_split,unit:"%",foot:"of total PU output"},
+  {label:"Override deployments",val:fmt(k.override_total),unit:"",foot:"2026 overtake mode"},
+];
+document.getElementById("kpis").innerHTML=kpis.map(x=>`<div class="kpi"><div class="label">${x.label}</div>
+  <div class="val mono">${x.val}<span class="unit">${x.unit}</span></div><div class="foot">${x.foot}</div></div>`).join("");
+
+document.getElementById("insight").innerHTML=`<b>Insight —</b> Under the 2026 rules the electric motor now supplies up to
+  <b>~47% of peak power-unit output</b> (vs ~13% in 2025), so races are increasingly won on <b>energy management</b>.
+  Heavy-braking street circuits (Baku, Montreal, Singapore) recover the most energy per lap, and the top teams convert
+  <b>${k.avg_regen_eff}%</b> of braking energy back into the battery — the new performance differentiator.`;
+
+/* ================= Chart helpers ================= */
+function hbars(mount, rows, opt){
+  // rows: [{label, value, color, sub, tip}]
+  const W=opt.w||520, rh=opt.rh||26, gap=opt.gap||10, padL=opt.padL||150, padR=opt.padR||54, padT=8;
+  const H=padT + rows.length*(rh+gap);
+  const min=opt.min||0;
+  const max=opt.max || Math.max(...rows.map(r=>r.value))*1.02;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`,role:"img"});
+  const x=v=>padL + ((v-min)/(max-min))*(W-padL-padR);
+  // gridlines
+  const ticks=opt.ticks||4;
+  for(let i=0;i<=ticks;i++){const gv=min+(max-min)*i/ticks,gx=x(gv);
+    svg.appendChild(el("line",{x1:gx,y1:padT,x2:gx,y2:H-4,class:"grline"}));
+    const t=el("text",{x:gx,y:H+2,"text-anchor":"middle",class:"axis-lbl"});t.textContent=opt.fmtTick?opt.fmtTick(gv):Math.round(gv);svg.appendChild(t);}
+  rows.forEach((r,i)=>{
+    const y=padT+i*(rh+gap);
+    const lb=el("text",{x:padL-10,y:y+rh/2+4,"text-anchor":"end",class:"cat-lbl"});lb.textContent=r.label;svg.appendChild(lb);
+    if(r.sub){const s=el("text",{x:padL-10,y:y+rh/2+16,"text-anchor":"end",class:"axis-lbl"});s.textContent=r.sub;svg.appendChild(s);}
+    const bw=Math.max(2,x(r.value)-padL);
+    const rect=el("rect",{x:padL,y:y+3,width:bw,height:rh-6,rx:4,fill:r.color||C.blue,class:"hoverable"});
+    rect.addEventListener("mousemove",e=>showTT(r.tip,e.clientX,e.clientY));
+    rect.addEventListener("mouseleave",hideTT); svg.appendChild(rect);
+    const vl=el("text",{x:padL+bw+8,y:y+rh/2+4,class:"val-lbl"});vl.textContent=opt.fmtVal?opt.fmtVal(r.value):r.value;svg.appendChild(vl);
+  });
+  if(opt.refLine!=null){const rx=x(opt.refLine);
+    svg.appendChild(el("line",{x1:rx,y1:padT,x2:rx,y2:H-4,stroke:C.ink2,"stroke-width":1,"stroke-dasharray":"4 3"}));
+    const t=el("text",{x:rx,y:padT-2,"text-anchor":"middle",class:"axis-lbl",fill:C.ink2});t.textContent=opt.refLabel||"";svg.appendChild(t);}
+  mount.innerHTML="";mount.appendChild(svg);
+}
+
+/* grouped 2-series horizontal bars */
+function groupedH(mount, rows){
+  const W=520, rh=30, gap=16, padL=120, padR=48, padT=6;
+  const H=padT+rows.length*(rh+gap);
+  const max=Math.max(...rows.map(r=>Math.max(r.a,r.b)))*1.04;
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`});
+  const x=v=>padL+(v/max)*(W-padL-padR);
+  for(let i=0;i<=4;i++){const gx=x(max*i/4);svg.appendChild(el("line",{x1:gx,y1:padT,x2:gx,y2:H-4,class:"grline"}));
+    const t=el("text",{x:gx,y:H+2,"text-anchor":"middle",class:"axis-lbl"});t.textContent=(max*i/4).toFixed(0);svg.appendChild(t);}
+  rows.forEach((r,i)=>{const y=padT+i*(rh+gap);
+    const lb=el("text",{x:padL-10,y:y+rh/2+4,"text-anchor":"end",class:"cat-lbl"});lb.textContent=r.label;svg.appendChild(lb);
+    const bh=(rh-4)/2;
+    [["a",C.aqua,"Harvested"],["b",C.orange,"Deployed"]].forEach(([key,col,nm],j)=>{
+      const bw=Math.max(2,x(r[key])-padL);
+      const rect=el("rect",{x:padL,y:y+j*(bh+2),width:bw,height:bh,rx:3,fill:col,class:"hoverable"});
+      rect.addEventListener("mousemove",e=>showTT(`<b>${r.label}</b><div class="r"><span class="k">${nm}</span><b>${r[key]} GJ</b></div>`,e.clientX,e.clientY));
+      rect.addEventListener("mouseleave",hideTT);svg.appendChild(rect);
+    });
+    const vl=el("text",{x:x(Math.max(r.a,r.b))+8,y:y+rh/2+4,class:"val-lbl"});vl.textContent=r.b+" GJ";svg.appendChild(vl);
+  });
+  mount.innerHTML="";mount.appendChild(svg);
+}
+
+/* multi-line */
+function multiLine(mount, series, opt){
+  const W=opt.w||540,H=opt.h||270,padL=44,padR=14,padT=14,padB=28;
+  const allY=series.flatMap(s=>s.points.map(p=>p.y));
+  const allX=series.flatMap(s=>s.points.map(p=>p.x));
+  const minX=Math.min(...allX),maxX=Math.max(...allX);
+  let minY=Math.min(...allY),maxY=Math.max(...allY);minY=Math.floor((minY-4)/10)*10;maxY=Math.ceil((maxY+4)/10)*10;
+  const x=v=>padL+(v-minX)/(maxX-minX)*(W-padL-padR);
+  const y=v=>padT+(1-(v-minY)/(maxY-minY))*(H-padT-padB);
+  const svg=el("svg",{viewBox:`0 0 ${W} ${H}`});
+  for(let i=0;i<=5;i++){const gv=minY+(maxY-minY)*i/5,gy=y(gv);
+    svg.appendChild(el("line",{x1:padL,y1:gy,x2:W-padR,y2:gy,class:"grline"}));
+    const t=el("text",{x:padL-8,y:gy+4,"text-anchor":"end",class:"axis-lbl"});t.textContent=gv+(opt.yunit||"");svg.appendChild(t);}
+  // x ticks
+  [minX,Math.round((minX+maxX)/2),maxX].forEach(xv=>{const t=el("text",{x:x(xv),y:H-8,"text-anchor":"middle",class:"axis-lbl"});t.textContent=(opt.xlabel||"")+xv;svg.appendChild(t);});
+  series.forEach(s=>{
+    let d="";s.points.forEach((p,i)=>{d+=(i?"L":"M")+x(p.x).toFixed(1)+" "+y(p.y).toFixed(1)+" ";});
+    svg.appendChild(el("path",{d,fill:"none",stroke:s.color,"stroke-width":2,"stroke-linejoin":"round","stroke-linecap":"round"}));
+  });
+  // hover crosshair by nearest x
+  const over=el("rect",{x:padL,y:padT,width:W-padL-padR,height:H-padT-padB,fill:"transparent",class:"hoverable"});
+  const cross=el("line",{x1:0,y1:padT,x2:0,y2:H-padB,stroke:C.axis,"stroke-width":1,opacity:0});
+  svg.appendChild(cross);
+  const dots=series.map(s=>{const c=el("circle",{r:4,fill:s.color,stroke:"#0d0d0d","stroke-width":1.5,opacity:0});svg.appendChild(c);return c;});
+  over.addEventListener("mousemove",e=>{
+    const rb=svg.getBoundingClientRect();const px=(e.clientX-rb.left)/rb.width*W;
+    const xv=Math.round(minX+(px-padL)/(W-padL-padR)*(maxX-minX));
+    cross.setAttribute("x1",x(xv));cross.setAttribute("x2",x(xv));cross.setAttribute("opacity",1);
+    let rows=`<b>${opt.xlabel||""}${xv}</b>`;
+    series.forEach((s,i)=>{const pt=s.points.reduce((a,b)=>Math.abs(b.x-xv)<Math.abs(a.x-xv)?b:a);
+      dots[i].setAttribute("cx",x(pt.x));dots[i].setAttribute("cy",y(pt.y));dots[i].setAttribute("opacity",1);
+      rows+=`<div class="r"><span class="k">${s.name}</span><b>${pt.y.toFixed(0)}${opt.yunit||""}</b></div>`;});
+    showTT(rows,e.clientX,e.clientY);
+  });
+  over.addEventListener("mouseleave",()=>{hideTT();cross.setAttribute("opacity",0);dots.forEach(d=>d.setAttribute("opacity",0));});
+  svg.appendChild(over);
+  mount.innerHTML="";mount.appendChild(svg);
+}
+
+/* ---- 2025 vs 2026 leap ---- */
+(function(){
+  const rows=[
+    {label:"2025 (outgoing ERS)",value:120,color:C.muted,tip:`<b>2025 ERS</b><div class="r"><span class="k">Deployable</span><b>120 kW</b></div><div class="r"><span class="k">Electric share</span><b>~13%</b></div>`},
+    {label:"2026 (new battery era)",value:350,color:C.orange,tip:`<b>2026 Power Unit</b><div class="r"><span class="k">Deployable</span><b>350 kW</b></div><div class="r"><span class="k">Electric share (peak)</span><b>~47%</b></div>`},
+  ];
+  hbars(document.getElementById("leap"),rows,{w:900,rh:44,gap:18,padL:170,padR:120,max:380,ticks:4,
+    fmtVal:v=>v+" kW"+(v===350?"  (+192%)":""),fmtTick:v=>v.toFixed(0)+" kW"});
+})();
+
+/* ---- Team energy ---- */
+groupedH(document.getElementById("teamEnergy"),
+  DATA.team_energy.map(t=>({label:t.team,a:t.harvested,b:t.deployed})));
+
+/* ---- Regen leaderboard ---- */
+hbars(document.getElementById("regen"),
+  DATA.driver_regen.map(d=>({label:d.driver.split(" ").slice(-1)[0],sub:d.team,value:d.regen,color:C.blue,
+    tip:`<b>${d.driver}</b> · ${d.team}<div class="r"><span class="k">Regen efficiency</span><b>${d.regen}%</b></div><div class="r"><span class="k">Harvested</span><b>${d.harvested} GJ</b></div>`})),
+  {w:520,rh:24,gap:8,padL:120,padR:52,max:94,min:86,ticks:4,fmtVal:v=>v+"%",fmtTick:v=>v.toFixed(0)});
+
+/* ---- Circuit demand (top 12) ---- */
+(function(){
+  const rows=DATA.circuit_demand.slice(0,12);
+  const max=Math.max(...rows.map(r=>r.harvest_per_lap));
+  // sequential blue by magnitude
+  const seq=["#0d366b","#104281","#184f95","#1c5cab","#256abf","#2a78d6","#3987e5","#5598e7","#6da7ec","#86b6ef","#9ec5f4","#b7d3f6"].reverse();
+  hbars(document.getElementById("circuit"),
+    rows.map((r,i)=>({label:r.grand_prix.replace(" GP",""),value:r.harvest_per_lap,
+      color:seq[Math.round((1-r.harvest_per_lap/max)* (seq.length-1))]||C.blue,
+      tip:`<b>${r.grand_prix}</b><div class="r"><span class="k">Harvest / lap</span><b>${r.harvest_per_lap} MJ</b></div><div class="r"><span class="k">Deploy / lap</span><b>${r.deploy_per_lap} MJ</b></div>`})),
+    {w:520,rh:20,gap:7,padL:120,padR:52,max:max*1.08,ticks:4,fmtVal:v=>v+" MJ",fmtTick:v=>v.toFixed(1)});
+})();
+
+/* ---- SoC trace ---- */
+(function(){
+  const cols=[C.blue,C.orange,C.aqua,C.yellow];
+  const series=DATA.soc_trace.series.map((s,i)=>({name:s.driver.split(" ").slice(-1)[0],color:cols[i],
+    points:s.points.map(p=>({x:p.lap,y:p.soc}))}));
+  document.getElementById("socLegend").innerHTML=series.map(s=>
+    `<span class="it"><span class="sw" style="background:${s.color}"></span>${s.name}</span>`).join("");
+  multiLine(document.getElementById("soc"),series,{w:540,h:250,yunit:"%",xlabel:"Lap "});
+})();
+</script>
+</body>
+</html>

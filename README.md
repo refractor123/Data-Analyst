@@ -26,6 +26,17 @@ A full-funnel view of $4.0M of marketing spend across 8 channels — **ROAS, CAC
 
 ---
 
+## 💼 Job search tool
+
+### 🔎 [Live job search with freehire](./Job-Search)
+A standard-library Python CLI over the free [freehire](https://github.com/strelov1/freehire) API: search 3.3M+ live IT postings by title, location, remote/hybrid, seniority, skills and salary, see facet counts, and export to CSV.
+
+```bash
+python Job-Search/freehire_jobs.py search "data analyst" --countries US --cities Dallas
+```
+
+---
+
 ## 🔎 How each project is structured
 ```
 <project>/

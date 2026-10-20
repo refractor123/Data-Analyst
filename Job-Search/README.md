@@ -15,7 +15,7 @@ Search **3.3M+ live IT job postings** pulled straight from company career pages,
 cd Job-Search
 
 # Data Analyst jobs in Dallas
-python freehire_jobs.py search "data analyst" --countries US --cities Dallas
+python freehire_jobs.py search "data analyst" --cities Dallas
 
 # Remote US analyst roles posted in the last 14 days, title match only, newest first
 python freehire_jobs.py search "data analyst" --title-only --countries US \

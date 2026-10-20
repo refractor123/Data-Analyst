@@ -12,7 +12,7 @@ endpoints that matter for a job search:
 Standard library only - no pip install needed.
 
 Examples:
-    python freehire_jobs.py search "data analyst" --countries US --cities Dallas
+    python freehire_jobs.py search "data analyst" --cities Dallas
     python freehire_jobs.py search "data analyst" --title-only --work-mode remote \
         --countries US --skills sql,tableau --max 200 --csv data_analyst_jobs.csv
     python freehire_jobs.py facets "data analyst" --countries US
@@ -239,7 +239,11 @@ def cmd_search(args):
 
 
 def cmd_facets(args):
-    body = api_get("/jobs/facets", build_filters(args))
+    params = build_filters(args)
+    # /jobs/facets doesn't read q_fields; express title-only with the title: operator instead
+    if params.pop("q_fields", None) and params.get("q"):
+        params["q"] = f'title:"{params["q"]}"'
+    body = api_get("/jobs/facets", params)
     warn_ignored(body.get("meta"))
     data = body.get("data") or {}
     print(f"\n{data.get('total', 0):,} matching postings\n")
